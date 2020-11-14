@@ -3,8 +3,8 @@ import html2canvas from 'html2canvas';
 
 export default function Zoom() {
   const onSave = (() =>{
-    document.querySelector("#grid").style.width='600vw';
-    document.querySelector("#grid").style.height='300vw';
+    document.querySelector("#grid").style.width='300vw';
+    document.querySelector("#grid").style.height='214.2vw';
     document.body.style.fontSize='5rem';
     html2canvas(document.querySelector("#grid"), {
       allowTaint: true,
@@ -20,7 +20,7 @@ export default function Zoom() {
       document.body.removeChild(a);
 
       document.querySelector("#grid").style.width='100vw';
-      document.querySelector("#grid").style.height='50vw';
+      document.querySelector("#grid").style.height='71.4vw';
       document.body.style.fontSize='1rem';
     });
   })
@@ -54,7 +54,7 @@ export default function Zoom() {
 
 const Cell = () => {
   const [files, setFiles] = useState([]);
-  const [name, setName] = useState('');
+  // const [name, setName] = useState('');
   const onChange = (e) => {
     setFiles(event.target.files);
   }
@@ -74,7 +74,7 @@ const Cell = () => {
           </div>
         );
         })}
-        <input
+        {/* <input
           value={name}
           placeholder="Enter name here"
           onChange={(e) => setName(e.value)}
@@ -90,7 +90,7 @@ const Cell = () => {
             boxShadow: 'none',
             fontSize: '1em',
           }}
-        />
+        /> */}
     </div>
   );
 }
