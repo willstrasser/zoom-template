@@ -47,7 +47,7 @@ export default function Zoom() {
           bottom: 0
         }}/>
       </div>
-      <div style={{position: 'absolute', background: 'green', top:0, padding:10}} onClick={onSave}>Save</div>
+      <div style={{position: 'absolute', background: 'green', top:0, padding:10}} onClick={onSave}>Export</div>
     </>
   );
 }
