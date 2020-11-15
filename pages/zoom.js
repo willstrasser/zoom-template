@@ -21,6 +21,7 @@ export default function Zoom() {
       allowTaint: true,
       scale: 1,
       ignoreElements: (element) => element.tagName === 'input',
+      imageTimeout: 0,
   }).then(function(canvas) {
       const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
       var a = document.createElement('a');
