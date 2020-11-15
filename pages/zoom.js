@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import {useState} from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from '@material-ui/core';
@@ -10,17 +11,22 @@ import styles from './Zoom.module.scss'
 const ASPECT_RATION = 5/7;
 const LAYOUT_WIDTH = 100;
 const LAYOUT_HEIGHT = LAYOUT_WIDTH * ASPECT_RATION;
-const ZOOM_FACTOR = 3;
+const OUTPUT_WIDTH = 4000;
 
 export default function Zoom() {
   const onSave = (() =>{
-    document.querySelector("#grid").style.width=`${ZOOM_FACTOR*LAYOUT_WIDTH}vw`;
-    document.querySelector("#grid").style.height=`${ZOOM_FACTOR*LAYOUT_HEIGHT}vw`;
-    document.body.style.fontSize='5rem';
-    html2canvas(document.querySelector("#grid"), {
+    const zoomFactor = OUTPUT_WIDTH/window.visualViewport.width;
+    const grid = document.querySelector("#grid");
+    grid.style.width=`${zoomFactor*LAYOUT_WIDTH}vw`;
+    grid.style.height=`${zoomFactor*LAYOUT_HEIGHT}vw`;
+    document.body.style.fontSize=`${zoomFactor}rem`;
+    html2canvas(grid, {
       allowTaint: true,
       scale: 1,
-      ignoreElements: (element) => element.tagName === 'input',
+      ignoreElements: (element) => {
+        console.log(element.tagName);
+        return element.tagName === 'INPUT';
+      },
       imageTimeout: 0,
   }).then(function(canvas) {
       const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -31,7 +37,8 @@ export default function Zoom() {
       a.click();
       document.body.removeChild(a);
 
-      document.querySelector("#grid").style.width=`${LAYOUT_WIDTH}vw`;
+      const grid = document.querySelector("#grid");
+      grid.style.width=`${LAYOUT_WIDTH}vw`;
       document.querySelector("#grid").style.height=`${LAYOUT_HEIGHT}vw`;
       document.body.style.fontSize='1rem';
     });
@@ -53,9 +60,10 @@ export default function Zoom() {
 
 const Cell = ({index}) => {
   const [files, setFiles] = useState([]);
+  const [name, setName] = useState('');
   const id = `icon-button-file-${index}`
   return (
-    <div className={styles.cell}>
+    <div className={classNames(styles.cell, {[styles.bottomRow]: index>7})}>
       {!files.length > 0 && (
         <div className={styles.upload}>
           <input className={styles.input} onChange={() => {setFiles(event.target.files)}} type="file" id={id}  accept="image/*"></input>
@@ -68,13 +76,17 @@ const Cell = ({index}) => {
       )}
       {Array.from(files).map(file=>{
         return (
-          <div className={styles.image} style={{background: `transparent url("${URL.createObjectURL(file)}") no-repeat center center/cover`}}>
-            <div className={styles.closeButton} >
-              <IconButton onClick={()=>setFiles([])} aria-label="remove picture" component="span">
-                <CancelIcon />
-              </IconButton>
+          <>
+            <div className={styles.image} style={{background: `transparent url("${URL.createObjectURL(file)}") no-repeat center center/cover`}}>
+              <div className={styles.closeButton} >
+                <IconButton onClick={()=>setFiles([])} aria-label="remove picture" component="span">
+                  <CancelIcon />
+                </IconButton>
+              </div>
             </div>
-          </div>
+            {name && <div className={styles.nameDisplay}>{name}</div>}
+            <input className={styles.nameInput} value={name} onChange={()=>setName(event.target.value)} placeholder="Enter name" />
+          </>
         );
         })}
     </div>

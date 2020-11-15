@@ -1,5 +1,5 @@
 .grid {
-    height: 71.4vw;
+    height: calc(500vw/7);
     width: 100vw;
     display: grid;
     grid-template-columns: 25% 25% 25% 25%;
@@ -13,7 +13,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom:0;
 }
 
 .exportButton {
@@ -57,4 +57,31 @@
 
 .image:hover .closeButton {
     display: inline!important;
+}
+    
+.bottomRow .nameInput {
+    bottom: 3.2em;
+}
+.nameInput {
+    position: absolute;
+    bottom: 0;
+    left:0;
+    opacity: 0;
+    padding: .4em .6em;
+}
+
+.nameInput:focus, .nameInput:placeholder-shown {
+    opacity: 1;
+}
+
+.nameDisplay {
+    position: absolute;
+    bottom: 0;
+    left:0;
+    background: rgba(0,0,0,.75);
+    color: white;
+    padding: .4em .6em;
+} 
+.bottomRow .nameDisplay {
+    bottom: 2.8em;
 }
