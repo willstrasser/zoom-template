@@ -1,0 +1,60 @@
+.grid {
+    height: 71.4vw;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: 33.33% 33.33% 33.33%;
+    border: .1em solid black;
+    position: relative;
+    background: rgba(0,0,0,.5);
+}
+.chrome {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.exportButton {
+    position: absolute; 
+    top: 0;
+    margin: 20px;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    border: .1em solid black;
+    position:relative;
+}
+
+.input {
+    display: none;
+}
+
+.upload {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.closeButton {
+    display: none!important;
+    cursor: pointer;
+    position: absolute;
+    top:0;
+    left:0;
+  }
+
+.image:hover .closeButton {
+    display: inline!important;
+}
