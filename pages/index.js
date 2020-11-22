@@ -63,6 +63,12 @@ export default function Zoom() {
 
 const Cell = ({index}) => {
   const [files, setFiles] = useState([]);
+  const [storedFile, setStoredFile] = useLocalStorage(index);
+  const prepFileAndStore = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => setStoredFile(reader.result);
+  };
   const [name, setName] = useState('');
   const id = `icon-button-file-${index}`;
   return (
@@ -72,7 +78,7 @@ const Cell = ({index}) => {
           <input
             className={styles.input}
             onChange={() => {
-              setFiles(event.target.files);
+              prepFileAndStore(event.target.files[0]);
             }}
             type="file"
             id={id}
@@ -85,37 +91,68 @@ const Cell = ({index}) => {
           </label>
         </div>
       )}
-      {Array.from(files).map((file) => {
-        return (
-          <>
-            <div
-              className={styles.image}
-              style={{
-                background: `transparent url("${URL.createObjectURL(
-                  file
-                )}") no-repeat center center/cover`,
-              }}
-            >
-              <div className={styles.closeButton}>
-                <IconButton
-                  onClick={() => setFiles([])}
-                  aria-label="remove picture"
-                  component="span"
-                >
-                  <CancelIcon />
-                </IconButton>
-              </div>
+      {storedFile && (
+        <>
+          <div
+            className={styles.image}
+            style={{
+              background: `transparent url(${storedFile}) no-repeat center center/cover`,
+            }}
+          >
+            <div className={styles.closeButton}>
+              <IconButton
+                onClick={() => setStoredFile()}
+                aria-label="remove picture"
+                component="span"
+              >
+                <CancelIcon />
+              </IconButton>
             </div>
-            {name && <div className={styles.nameDisplay}>{name}</div>}
-            <input
-              className={styles.nameInput}
-              value={name}
-              onChange={() => setName(event.target.value)}
-              placeholder="Enter name"
-            />
-          </>
-        );
-      })}
+          </div>
+          {name && <div className={styles.nameDisplay}>{name}</div>}
+          <input
+            className={styles.nameInput}
+            value={name}
+            onChange={() => setName(event.target.value)}
+            placeholder="Enter name"
+          />
+        </>
+      )}
     </div>
   );
 };
+
+function useLocalStorage(key, initialValue) {
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      // Get from local storage by key
+      const item = window.localStorage.getItem(key);
+      // Parse stored json or if none return initialValue
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      // If error also return initialValue
+      console.log(error);
+      return initialValue;
+    }
+  });
+
+  // Return a wrapped version of useState's setter function that ...
+  // ... persists the new value to localStorage.
+  const setValue = (value) => {
+    try {
+      // Allow value to be a function so we have same API as useState
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
+      // Save state
+      setStoredValue(valueToStore);
+      // Save to local storage
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      // A more advanced implementation would handle the error case
+      console.log(error);
+    }
+  };
+
+  return [storedValue, setValue];
+}
